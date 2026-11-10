@@ -52,5 +52,32 @@
     "Tipe Salesman": "Sales Representative Retailer Yudistira",
     "Vs Target": "1",
     "tgt": "1000000"
+  },
+  {
+    "Active": "1",
+    "Ada": "1",
+    "All": "1",
+    "Confirm": "1",
+    "Depo": "Depo Banjarmasin",
+    "Dips": "1",
+    "HO": "1",
+    "Hub Baik": "1",
+    "Id Outlet": "",
+    "Id Salesman": "123434565",
+    "Nama": "Taufik",
+    "Nama Outlet": "bebas",
+    "No": 7,
+    "POP": "1",
+    "Promo": "1",
+    "SL<2 menit": "1",
+    "Scan": "1",
+    "Start Selling": "",
+    "Stop Selling": "11/10/2026 8:38:41 AM",
+    "Tanggal": null,
+    "Tipe Coaching": "",
+    "Tipe Outlet": "MTI",
+    "Tipe Salesman": "Sales Representative Wholesaler Arjuna",
+    "Vs Target": "1",
+    "tgt": "900000"
   }
 ]
