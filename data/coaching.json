@@ -25,5 +25,32 @@
     "Tipe Salesman": "SAC Arjuna",
     "Vs Target": "1",
     "tgt": "1235345345345"
+  },
+  {
+    "Active": "0",
+    "Ada": "1",
+    "All": "1",
+    "Confirm": "0",
+    "Depo": "Depo Barabai",
+    "Dips": "1",
+    "HO": "1",
+    "Hub Baik": "1",
+    "Id Outlet": "",
+    "Id Salesman": "125643",
+    "Nama": "Taufik",
+    "Nama Outlet": "sfsfds",
+    "No": 5,
+    "POP": "1",
+    "Promo": "1",
+    "SL<2 menit": "0",
+    "Scan": "1",
+    "Start Selling": "",
+    "Stop Selling": "11/10/2026 3:41:12 AM",
+    "Tanggal": null,
+    "Tipe Coaching": "",
+    "Tipe Outlet": "MTI",
+    "Tipe Salesman": "Sales Representative Retailer Yudistira",
+    "Vs Target": "1",
+    "tgt": "1000000"
   }
 ]
