@@ -1,0 +1,65 @@
+name: Update Coaching Dashboard
+
+on:
+  repository_dispatch:
+    types: [Data_Update]
+
+permissions:
+  contents: write
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Update Coaching JSON
+        env:
+          PAYLOAD: ${{ toJson(github.event.client_payload) }}
+        run: |
+          python - <<'PY'
+          import os
+          import json
+          from pathlib import Path
+
+          path = Path("data/coaching.json")
+          path.parent.mkdir(parents=True, exist_ok=True)
+
+          payload = json.loads(os.environ["PAYLOAD"])
+          new_row = payload.get("data", {})
+
+          if not isinstance(new_row, dict):
+              raise ValueError("Payload data harus berupa object JSON")
+
+          if path.exists():
+              records = json.loads(path.read_text(encoding="utf-8"))
+          else:
+              records = []
+
+          if not isinstance(records, list):
+              raise ValueError("coaching.json harus berupa JSON array")
+
+          records.append(new_row)
+
+          path.write_text(
+              json.dumps(records, ensure_ascii=False, indent=2),
+              encoding="utf-8"
+          )
+
+          print(f"Total data coaching: {len(records)}")
+          PY
+
+      - name: Commit and Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/coaching.json
+          git commit -m "Update coaching data" || echo "No changes to commit"
+          git push
