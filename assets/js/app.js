@@ -56,11 +56,13 @@ function getGrade(score) {
 
 function getSelectedRows() {
   const selectedName = $("salesman-filter").value;
+  const selectedOutlet = $("outlet-filter").value;
   const from = $("date-from").value ? new Date(`${$("date-from").value}T00:00:00`) : null;
   const to = $("date-to").value ? new Date(`${$("date-to").value}T23:59:59.999`) : null;
 
   return allRows.filter(row => {
     if (selectedName && textValue(row["Nama"]) !== selectedName) return false;
+    if (selectedOutlet && textValue(row["Nama Outlet"]) !== selectedOutlet) return false;
     const date = parseDate(row);
     // Jika rentang tanggal dipakai, baris tanpa tanggal tidak dapat masuk rentang.
     if ((from || to) && !date) return false;
@@ -68,6 +70,20 @@ function getSelectedRows() {
     if (to && date > to) return false;
     return true;
   });
+}
+
+function updateOutletOptions(preserveSelection = true) {
+  const select = $("outlet-filter");
+  const previous = preserveSelection ? select.value : "";
+  const selectedName = $("salesman-filter").value;
+  const scopedRows = allRows.filter(row =>
+    !selectedName || textValue(row["Nama"]) === selectedName
+  );
+  const outlets = uniqueSorted(scopedRows.map(row => textValue(row["Nama Outlet"])));
+
+  select.innerHTML = '<option value="">Semua Toko</option>' +
+    outlets.map(outlet => `<option value="${escapeHtml(outlet)}">${escapeHtml(outlet)}</option>`).join("");
+  select.value = previous && outlets.includes(previous) ? previous : "";
 }
 
 function renderIndicators(rows) {
@@ -147,7 +163,25 @@ function escapeHtml(value) {
   })[char]);
 }
 
+function renderSalesmanProfile() {
+  const selectedName = $("salesman-filter").value;
+  const profile = allRows.find(row => textValue(row["Nama"]) === selectedName);
+
+  if (!selectedName || !profile) {
+    $("profile-type").textContent = selectedName ? "Data tipe belum tersedia" : "Pilih salesman";
+    $("profile-depo").textContent = "—";
+    return;
+  }
+
+  const rawType = textValue(profile["Tipe Salesman"]) || textValue(profile["Jabatan"]);
+  // Khusus tipe yang mengandung BH, tampilkan label ringkas "BH".
+  const displayType = /\bBH\b/i.test(rawType) ? "BH" : (rawType || "Tidak tersedia");
+  $("profile-type").textContent = displayType;
+  $("profile-depo").textContent = textValue(profile["Depo"]) || "Tidak tersedia";
+}
+
 function render() {
+  renderSalesmanProfile();
   const rows = getSelectedRows();
   $("visit-count").textContent = formatNumber(rows.length, 0);
 
@@ -205,6 +239,7 @@ async function init() {
     const names = uniqueSorted(allRows.map(row => textValue(row["Nama"])));
     $("salesman-filter").innerHTML = '<option value="">Semua Salesman</option>' +
       names.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("");
+    updateOutletOptions(false);
 
     const validDates = allRows.map(parseDate).filter(Boolean).sort((a, b) => a - b);
     if (validDates.length) {
@@ -226,7 +261,11 @@ async function init() {
   }
 }
 
-$("salesman-filter").addEventListener("change", render);
+$("salesman-filter").addEventListener("change", () => {
+  updateOutletOptions(false);
+  render();
+});
+$("outlet-filter").addEventListener("change", render);
 $("date-from").addEventListener("change", () => { activeRange = "custom"; render(); });
 $("date-to").addEventListener("change", () => { activeRange = "custom"; render(); });
 document.querySelectorAll(".quick-ranges button").forEach(button => {
@@ -234,3 +273,44 @@ document.querySelectorAll(".quick-ranges button").forEach(button => {
 });
 
 init();
+
+
+// Navigation between Dashboard and embedded Microsoft Forms.
+(function setupAppNavigation() {
+  const openButton = document.getElementById("menu-open");
+  const closeButton = document.getElementById("menu-close");
+  const backdrop = document.getElementById("drawer-backdrop");
+  const drawerItems = document.querySelectorAll(".drawer-item");
+  const dashboardView = document.getElementById("dashboard-view");
+  const formView = document.getElementById("form-view");
+  const formBack = document.getElementById("form-back");
+
+  if (!openButton || !dashboardView || !formView) return;
+
+  function closeDrawer() {
+    document.body.classList.remove("drawer-open");
+    document.getElementById("app-drawer")?.setAttribute("aria-hidden", "true");
+  }
+
+  function showView(name) {
+    const isForm = name === "form";
+    dashboardView.classList.toggle("view-active", !isForm);
+    formView.classList.toggle("view-active", isForm);
+    document.body.classList.toggle("form-active", isForm);
+    drawerItems.forEach(item => item.classList.toggle("active", item.dataset.view === name));
+    closeDrawer();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  openButton.addEventListener("click", () => {
+    document.body.classList.add("drawer-open");
+    document.getElementById("app-drawer")?.setAttribute("aria-hidden", "false");
+  });
+  closeButton?.addEventListener("click", closeDrawer);
+  backdrop?.addEventListener("click", closeDrawer);
+  drawerItems.forEach(item => item.addEventListener("click", () => showView(item.dataset.view)));
+  formBack?.addEventListener("click", () => showView("dashboard"));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeDrawer();
+  });
+})();

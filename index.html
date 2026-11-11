@@ -30,7 +30,7 @@
           <h1>Coaching Dashboard</h1>
           <p class="hero-subtitle">Ringkasan kualitas kunjungan salesman</p>
         </div>
-        <div class="hero-icon" aria-hidden="true">▥</div>
+        <button class="hero-menu-button" id="menu-open" type="button" aria-label="Buka menu">☰</button>
       </div>
       <div class="filter-panel">
         <label for="salesman-filter">Nama Salesman</label>
@@ -41,6 +41,7 @@
       <div class="updated-line" id="updated-at">Memuat pembaruan data...</div>
     </header>
 
+    <section class="view view-active" id="dashboard-view">
     <section class="content">
       <div id="error-message" class="message error hidden" role="alert"></div>
 
@@ -68,6 +69,24 @@
           <div class="grade-track"><span id="grade-progress"></span></div>
           <small id="grade-range">A: 16 · B: 12–15 · C: di bawah 12</small>
         </div>
+      </section>
+
+      <section id="salesman-profile" class="profile-grid" aria-label="Informasi salesman">
+        <article class="profile-card">
+          <span class="profile-label">Jabatan / Tipe Sales</span>
+          <strong id="profile-type">Pilih salesman</strong>
+        </article>
+        <article class="profile-card">
+          <span class="profile-label">Depo</span>
+          <strong id="profile-depo">—</strong>
+        </article>
+      </section>
+
+      <section class="outlet-filter-panel">
+        <label for="outlet-filter">Filter Nama Toko / Outlet</label>
+        <select id="outlet-filter">
+          <option value="">Semua Toko</option>
+        </select>
       </section>
 
       <section class="panel">
@@ -117,6 +136,46 @@
         <span id="data-status">Sumber: data/coaching.json</span>
       </footer>
     </section>
+    </section>
+
+    <section class="view form-view" id="form-view" aria-label="Form Coaching">
+      <header class="form-page-header">
+        <button type="button" class="back-button" id="form-back">← Dashboard</button>
+        <div>
+          <p class="section-kicker">COACHING MANAGEMENT</p>
+          <h2>Form Coaching</h2>
+          <p>Isi form kunjungan melalui Microsoft Forms.</p>
+        </div>
+      </header>
+      <div class="form-frame-wrap">
+        <iframe
+          id="microsoft-form"
+          title="Microsoft Forms - Form Coaching"
+          src="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=bRRwIkG0N0KU0gFfQwyQTs6Sa5KL7rJGuLWE-s7kTQBUQldKNjhZTjdJSUQyRE5XRkQ0T0FOSlkxSC4u&embed=true"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+    </section>
   </main>
+
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="app-drawer" id="app-drawer" aria-label="Menu navigasi" aria-hidden="true">
+    <div class="drawer-header">
+      <div>
+        <span class="drawer-kicker">COACHING MANAGEMENT</span>
+        <h2>Menu</h2>
+      </div>
+      <button type="button" id="menu-close" class="drawer-close" aria-label="Tutup menu">×</button>
+    </div>
+    <button type="button" class="drawer-item active" data-view="dashboard">
+      <span class="drawer-item-icon">▦</span>
+      <span><strong>Dashboard</strong><small>Ringkasan performa coaching</small></span>
+    </button>
+    <button type="button" class="drawer-item" data-view="form">
+      <span class="drawer-item-icon">▤</span>
+      <span><strong>Form Coaching</strong><small>Input penilaian dan kunjungan</small></span>
+    </button>
+  </aside>
 </body>
 </html>
